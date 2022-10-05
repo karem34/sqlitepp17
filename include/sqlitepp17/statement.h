@@ -69,15 +69,17 @@ struct statement {
     return std::move(*this);
   }
 
-  inline void exec() {
+  inline statement &&exec() {
     while (step()) {
     }
+    return std::move(*this);
   }
-  template <typename Func> inline void exec(Func &&func) {
+  template <typename Func> inline statement &&exec(Func &&func) {
     using args = typename function_traits<decltype(&Func::operator())>::args;
     while (step()) {
       std::apply(func, get<args>());
     }
+    return std::move(*this);
   }
 
   inline bool step() {
@@ -90,10 +92,11 @@ struct statement {
     return false;
   }
 
-  inline void reset() {
+  inline statement &&reset() {
     check(sqlite3_reset(m_stmt.get()));
     check(sqlite3_clear_bindings(m_stmt.get()));
     m_bind_idx = 1;
+    return std::move(*this);
   }
   inline bool readonly() { return sqlite3_stmt_readonly(m_stmt.get()); }
   inline void decrement_next() { m_bind_idx = std::max(m_bind_idx - 1, 1); }
