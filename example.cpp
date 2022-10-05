@@ -99,10 +99,11 @@ int main() {
     db.exec("DELETE FROM people WHERE age < ?", 18);
 
     // you can also use statements
-    std::vector<std::string> names_st;
-    auto statement = db.query("SELECT first_name FROM people").to(names_st);
-
-    fmt::print("{}\n", names_st);
+    std::string first_name_st, last_name_st;
+    auto statement =
+        db.query("SELECT first_name, last_name FROM people LIMIT 1")
+            .to(first_name_st, last_name_st);
+    fmt::print("{} {} is the first person\n", first_name_st, last_name_st);
 
     // this will throw if an error occurs, and return false if there are no more
     // rows, note that statement.to(), will execute a step and copy the output

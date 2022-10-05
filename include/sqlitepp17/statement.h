@@ -62,10 +62,11 @@ struct statement {
       out.push_back(get<T>());
     return std::move(*this);
   };
-  template <typename T> inline statement &&to(T &out) {
+  template <typename... Args> inline statement &&to(Args &&...out) {
     if (!step())
       no_row();
-    out = get<T>();
+    int idx = 0;
+    ((out = get<std::remove_reference_t<decltype(out)>>(idx++)), ...);
     return std::move(*this);
   }
 
