@@ -43,30 +43,28 @@ db.query("SELECT age FROM People").exec([&](int age) { total_age += age; });
 ### Custom Types
 
 ```cpp
+namespace type {
 struct Person {
   std::string first_name;
   std::string last_name;
   uint age;
 };
-template <>
-inline void sqlitepp17::from_sql(statement &stmt, Person &p, int idx) {
+inline void from_sql(sqlitepp17::statement &stmt, Person &p, int idx) {
   p.first_name = stmt.get<std::string>(idx++);
   p.last_name = stmt.get<std::string>(idx++);
   p.age = stmt.get<int>(idx++);
 };
-template <>
-inline void sqlitepp17::to_sql(statement &stmt, const Person &p, int idx) {
+inline void to_sql(sqlitepp17::statement &stmt, const Person &p, int idx) {
   stmt.bind(":first_name", p.first_name);
   stmt.bind(":last_name", p.last_name);
   stmt.bind(":age", p.age);
 };
+} // namespace type
 
-Person jane = {"Jane", "Doe", 30};
+type::Person jane = {"Jane", "Doe", 30};
 db.exec("INSERT INTO people (first_name, last_name, age)"
         "VALUES (:first_name, :last_name, :age)",
         jane);
-
-}
 ```
 
 ### Null Values

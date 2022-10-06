@@ -8,18 +8,15 @@
 namespace sqlitepp17 {
 
 // these are 'from_sql' and 'to_sql' implementations for various standard types
-template <>
 inline void from_sql(statement &stmt, std::string &value, const int idx) {
   value = stmt.get_impl_s(idx);
 };
-template <> inline void from_sql(statement &stmt, int &value, const int idx) {
+inline void from_sql(statement &stmt, int &value, const int idx) {
   value = stmt.get_impl_i(idx);
 };
-template <>
 inline void from_sql(statement &stmt, double &value, const int idx) {
   value = stmt.get_impl_d(idx);
 };
-template <>
 inline void from_sql(statement &stmt, const void *&value, const int idx) {
   value = stmt.get_impl_blob(idx);
 };

@@ -4,26 +4,26 @@
 #include <fmt/ranges.h>
 #include <string>
 
+namespace type {
 struct Person {
   std::string first_name;
   std::string last_name;
   uint age;
 };
-// FIXME: these funcitons need to exist in the sqlitepp17 namespace
-template <>
-inline void sqlitepp17::from_sql(statement &stmt, Person &p, int idx) {
+inline void from_sql(sqlitepp17::statement &stmt, Person &p, int idx) {
   p.first_name = stmt.get<std::string>(idx++);
   p.last_name = stmt.get<std::string>(idx++);
   p.age = stmt.get<int>(idx++);
 };
-template <>
-inline void sqlitepp17::to_sql(statement &stmt, const Person &p, int idx) {
+inline void to_sql(sqlitepp17::statement &stmt, const Person &p, int idx) {
   stmt.bind(":first_name", p.first_name);
   stmt.bind(":last_name", p.last_name);
   stmt.bind(":age", p.age);
 };
+} // namespace type
 
 int main() {
+  using namespace type;
   using namespace sqlitepp17;
   try {
     // open db
